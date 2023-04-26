@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Point of Sale System</title>
+    <link rel="stylesheet" href="fontawesome-free-5.15.1-web/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body class="">
+    <div class="container-fluid mb-5">
+        <div class="row m-auto" style="width: 100%;">
+            <div class="col-md-10 ">
+                <section id="about" class=" row justify-content-around py-4">
+                    <div class=" col-md-8 bg-white py-4 shadow">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="add-new-item">+ Add New Item</p>
+                            <div class="search-container">
+                                <input type="text" placeholder="Search..." onkeyup="filterProducts(this.value)">
+                                <button type="button"><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                        <div class="product-container row mt-4" id="productsContainer">
+
+                        </div>
+
+
+                    </div>
+                    <div class=" col-md-4  ">
+
+                        <div class="col-md-12    bg-white shadow">
+
+                           
+
+                                <div class="text-center py-2">
+                                    <h4 class="title">Checkout</h4>
+                                </div>
+                                <div class="px-3 pb-2">
+                                    <label for="">Customers</label>
+                                    <select name="customers" id="customers" class="form-control ">
+                                        <!-- <option></option>
+                                        <option value="01119957591">01119957591</option>
+                                        <option value="01119957591">01102070759</option>
+                                        <option value="01119957591">01100272482</option>
+                                        <option value="01119957591">01200568666</option> -->
+
+                                    </select>
+                                    <p class="mt-2" id="customerInfo"></p>
+                                </div>
+                                <div class="checkout-container h-100 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <div class="checkout-header  py-2 d-flex">
+                                            <div class="col-md-6 ">
+                                                <p class="pl-4">Name</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <div class="col-md-6 text-center">
+                                                        <p>QTY</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <p>Price</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="checkout-body " id="checkout">
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-5">
+                                        <label for="note">Add any notes:</label>
+                                        <textarea class="form-control" id="note" rows="2"></textarea>
+                                      </div>
+                                    <div class=" ">
+                                        <div class="checkout-footer">
+                                            <div class="checkout-header py-3 ">
+                                                <div class="d-flex my-2 mx-3 justify-content-between">
+                                                    <p>Total</p>
+                                                    <p id="total">$84.00</p>
+                                                </div>
+                                                <div class="d-flex  my-2 mx-3 justify-content-between">
+                                                    <p>Discount%</p>
+                                                    <input type="text" pattern="[0-9]*" id="discount" onkeyup="changeDiscount(this.value)" min="0" value="10" style="width: 10%;">
+                                                </div>
+                                                <div class="d-flex my-2 mx-3 justify-content-between">
+                                                    <p>Total after discount</p>
+                                                    <p id="totalAfterDiscount">$84.00</p>
+                                                </div>
+                                                <div class="d-flex my-2 mx-3 justify-content-between">
+                                                    <p>Tax <input type="text" pattern="[0-9]*" id="tax" onkeyup="changeTax(this.value)" min="0" value="13" style="width: 15%;"></p>
+                                                    <p id="displayTax">$1.50</p>
+                                                </div>
+                                                <div class="d-flex my-2 mx-3 justify-content-between">
+                                                    <p>Total after tax</p>
+                                                    <p id="totalAfterTax">$84.00</p>
+                                                </div>
+                                            </div>
+                                            <div class="total d-flex justify-content-between mx-3 my-2">
+                                                <h3>Total</h3>
+                                                <h3 id="totalPrice" class="primary-color"> $85.50 </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                          
+                        </div>
+
+                        <button id="pay" class="btn mt-4 py-3 btn-primary-color w-100"></button>
+                    </div>
+
+                </section>
+                <div class="col-md-8 row justify-content-start align-items-center  " id="sections">
+                    
+
+                </div>
+
+            </div>
+            <div class="col-md-2 ">
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"
+        integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.4/dist/sweetalert2.all.min.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
