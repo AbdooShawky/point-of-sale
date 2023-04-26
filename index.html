@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="fontawesome-free-5.15.1-web/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
         integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+   
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="style.css">
@@ -18,13 +19,13 @@
                 <section id="about" class=" row justify-content-around py-4">
                     <div class=" col-md-8 bg-white py-4 shadow">
                         <div class="d-flex justify-content-between align-items-center">
-                            <p class="add-new-item">+ Add New Item</p>
-                            <div class="search-container">
-                                <input type="text" placeholder="Search..." onkeyup="filterProducts(this.value)">
+                            <p class="add-new-item"></p>
+                            <div class="search-container" dir="rtl">
+                                <input type="text" placeholder="بحث..." onkeyup="filterProducts(this.value)">
                                 <button type="button"><i class="fa fa-search"></i></button>
                             </div>
                         </div>
-                        <div class="product-container row mt-4" id="productsContainer">
+                        <div class="product-container row mt-4" dir="rtl" id="productsContainer">
 
                         </div>
 
@@ -32,91 +33,108 @@
                     </div>
                     <div class=" col-md-4  ">
 
-                        <div class="col-md-12    bg-white shadow">
+                        <div class="col-md-12    bg-white shadow" dir="rtl">
 
-                           
 
-                                <div class="text-center py-2">
-                                    <h4 class="title">Checkout</h4>
-                                </div>
-                                <div class="px-3 pb-2">
-                                    <label for="">Customers</label>
-                                    <select name="customers" id="customers" class="form-control ">
-                                        <!-- <option></option>
+
+                            <div class="text-center py-2 ">
+                                <h4 class="title">الفاتورة</h4>
+                            </div>
+                            <div class="px-3 pb-2 text-right" >
+                                <label for="">العملاء</label>
+                                <select name="customers" id="customers" class="form-control ">
+                                    <!-- <option></option>
                                         <option value="01119957591">01119957591</option>
                                         <option value="01119957591">01102070759</option>
                                         <option value="01119957591">01100272482</option>
                                         <option value="01119957591">01200568666</option> -->
 
-                                    </select>
-                                    <p class="mt-2" id="customerInfo"></p>
-                                </div>
-                                <div class="checkout-container h-100 d-flex flex-column justify-content-between">
-                                    <div>
-                                        <div class="checkout-header  py-2 d-flex">
-                                            <div class="col-md-6 ">
-                                                <p class="pl-4">Name</p>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <div class="col-md-6 text-center">
-                                                        <p>QTY</p>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <p>Price</p>
-                                                    </div>
+                                </select>
+                                <p class="mt-2" id="customerInfo"></p>
+                            </div>
+                            <div class="checkout-container h-100 d-flex flex-column justify-content-between">
+                                <div>
+                                    <div class="checkout-header  py-2 d-flex">
+                                        <div class="col-md-6 text-right ">
+                                            <p class="pr-4">الاسم</p>
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                            <div class="row">
+                                                <div class="col-md-6 text-center">
+                                                    <p>الكمية</p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p>السعر</p>
                                                 </div>
                                             </div>
-
                                         </div>
-                                        <div class="checkout-body " id="checkout">
 
-                                        </div>
                                     </div>
-                                    <div class="form-group mt-5">
-                                        <label for="note">Add any notes:</label>
-                                        <textarea class="form-control" id="note" rows="2"></textarea>
-                                      </div>
-                                    <div class=" ">
-                                        <div class="checkout-footer">
-                                            <div class="checkout-header py-3 ">
-                                                <div class="d-flex my-2 mx-3 justify-content-between">
-                                                    <p>Total</p>
-                                                    <p id="total">$84.00</p>
-                                                </div>
-                                                <div class="d-flex  my-2 mx-3 justify-content-between">
-                                                    <p>Discount%</p>
-                                                    <input type="text" pattern="[0-9]*" id="discount" onkeyup="changeDiscount(this.value)" min="0" value="10" style="width: 10%;">
-                                                </div>
-                                                <div class="d-flex my-2 mx-3 justify-content-between">
-                                                    <p>Total after discount</p>
-                                                    <p id="totalAfterDiscount">$84.00</p>
-                                                </div>
-                                                <div class="d-flex my-2 mx-3 justify-content-between">
-                                                    <p>Tax <input type="text" pattern="[0-9]*" id="tax" onkeyup="changeTax(this.value)" min="0" value="13" style="width: 15%;"></p>
-                                                    <p id="displayTax">$1.50</p>
-                                                </div>
-                                                <div class="d-flex my-2 mx-3 justify-content-between">
-                                                    <p>Total after tax</p>
-                                                    <p id="totalAfterTax">$84.00</p>
-                                                </div>
-                                            </div>
-                                            <div class="total d-flex justify-content-between mx-3 my-2">
-                                                <h3>Total</h3>
-                                                <h3 id="totalPrice" class="primary-color"> $85.50 </h3>
-                                            </div>
-                                        </div>
+                                    <div class="checkout-body " id="checkout">
+
                                     </div>
                                 </div>
-                          
+                                <div class="form-group mt-5 text-right">
+                                    <label for="note">اضافة ملاحظات:</label>
+                                    <textarea class="form-control" id="note" rows="2"></textarea>
+                                </div>
+                                <div class=" ">
+                                    <div class="checkout-footer">
+                                        <div class="checkout-header py-3 ">
+                                            <div class="d-flex my-2 mx-3 justify-content-between">
+                                                <p>المجموع</p>
+                                                <p id="total">00.00 L.E</p>
+                                            </div>
+                                            <div class="d-flex  my-2 mx-3 justify-content-between">
+                                                <div class="d-flex">
+                                                    <p class="">الخصم</p>
+                                                    <select class="mx-2" name="" id="discountPayMode">
+                                                        <option value="percentage">%</option>
+                                                        <option value="le">L.E</option>
+                                                    </select>
+
+                                                </div>
+                                                <input type="text" pattern="[0-9]*" id="discount"
+                                                    onkeyup="changeDiscount(this.value)" min="0" value="10"
+                                                    style="width: 10%;">
+                                            </div>
+                                            <div class="d-flex my-2 mx-3 justify-content-between">
+                                                <p>المجموع بعد الخصم</p>
+                                                <p id="totalAfterDiscount">00.00 L.E</p>
+                                            </div>
+                                            <div class="d-flex my-2 mx-3 justify-content-between">
+                                                <div class="d-flex">
+                                                    <p>الضريبة</p>
+                                                    <select class="mx-2" name="" id="taxPayMode">
+                                                        <option value="percentage">%</option>
+                                                        <option value="le">L.E</option>
+                                                    </select>
+                                                </div>
+                                                <input type="text" pattern="[0-9]*" id="tax" style="width: 10%;"
+                                                    onkeyup="changeTax(this.value)" min="0" value="10">
+                                                <!-- <p id="displayTax">$1.50</p> -->
+                                            </div>
+                                            <div class="d-flex my-2 mx-3 justify-content-between">
+                                                <p>المجموع بعد الضريبة</p>
+                                                <p id="totalAfterTax">00.00 L.E</p>
+                                            </div>
+                                        </div>
+                                        <div class="total d-flex justify-content-between mx-3 my-2">
+                                            <h3>المجموع</h3>
+                                            <h3 id="totalPrice" class="primary-color"> 00.00 L.E </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
 
-                        <button id="pay" class="btn mt-4 py-3 btn-primary-color w-100"></button>
+                        <button id="pay" class="btn mt-4 py-3 btn-primary-color w-100">اشتري (00.00 L.E) </button>
                     </div>
 
                 </section>
-                <div class="col-md-8 row justify-content-start align-items-center  " id="sections">
-                    
+                <div class="col-md-8 row justify-content-start align-items-center  " dir="rtl" id="sections">
+
 
                 </div>
 

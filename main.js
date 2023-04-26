@@ -1,43 +1,46 @@
 let counter = 0;
 let totalPrice = 0;
-let totalAfterDiscount = 0
-let totalAfterTax = 0
-let total = 0
+let totalAfterDiscount = 0;
+let totalAfterTax = 0;
+let total = 0;
+let isDiscountPercentage = true;
+let isTaxPercentage = true;
 let discount = parseFloat($("#discount").val());
 let tax = parseFloat($("#tax").val());
 let sections = [{ id: 2, name: "BBQ" }, { id: 3, name: "electronics" }];
 let products = [
     {
         id: 1,
-        name: "Costa Coffee",
+        name: "كوستا كافيه",
         price: 7.99,
         image: "./images/homemade-white-chocolate-mocha-image-square.jpg"
     },
     {
         id: 2,
-        name: "mocca Coffee",
+        name: "قهوة موكا",
         price: 7.99,
         image: "./images/homemade-white-chocolate-mocha-image-square.jpg"
     },
     {
         id: 3,
-        name: "nescaffee ",
+        name: "نسكافيه ",
         price: 7.99,
         image: "./images/homemade-white-chocolate-mocha-image-square.jpg"
     },
     {
         id: 4,
-        name: "carrot cake",
+        name: "قهوة فرنساوي",
         price: 7.99,
         image: "./images/homemade-white-chocolate-mocha-image-square.jpg"
     },
     {
         id: 5,
-        name: "black Coffee",
-        price: 7.99,
+        name: "قهوة سوداء",
+        price: 100,
         image: "./images/homemade-white-chocolate-mocha-image-square.jpg"
     },
 ];
+
 let customerMobileNumbers = ['01119957591', '01102070759', '01100272482', '01200568666'];
 
 let items = [];
@@ -59,7 +62,7 @@ function addItem(productId) {
         }
         items.push(item);
     }
-    calculateReceipt()
+    calculateReceipt(isDiscountPercentage, isTaxPercentage);
     displayItems(items)
     // console.log(items);
 }
@@ -70,7 +73,7 @@ function increaseCount(itemId) {
     item.count += 1
     item.totalPrice = item.count * item.product.price
     displayItems(items)
-    calculateReceipt()
+    calculateReceipt(isDiscountPercentage, isTaxPercentage);
     //$(`#${item.product.name.toString().replace(/\s+/g, '')}Count`).text(item.count);
 }
 
@@ -87,32 +90,46 @@ function decreaseCount(itemId) {
         // $(`#${item.product.name.toString().replace(/\s+/g, '')}Count`).text(item.count);
         displayItems(items)
     }
-    calculateReceipt()
+    calculateReceipt(isDiscountPercentage, isTaxPercentage);
 }
 
 function removeItem(itemId) {
     items.splice(items.findIndex((item) => item.id === itemId), 1);
     displayItems(items);
-    calculateReceipt();
+    calculateReceipt(isDiscountPercentage, isTaxPercentage);
 }
 
-function calculateReceipt() {
+function calculateReceipt(isDiscountPercentage, isTaxPercentage) {
     let subTotal = 0;
+    let discountedPrice = 0;
     for (const item of items) {
         subTotal += item.totalPrice;
     }
-    let discountedPrice = subTotal * (1 - (discount / 100));
-    totalPrice = discountedPrice + parseFloat(tax);
+    if (isDiscountPercentage) {
+
+        discountedPrice = subTotal * (1 - (discount / 100));
+    }
+    else {
+        discountedPrice = subTotal - discount;
+    }
+    if (isTaxPercentage) {
+
+        totalPrice = discountedPrice + parseFloat(subTotal * (tax / 100));
+    }
+    else {
+        totalPrice = discountedPrice + parseFloat(tax);
+
+    }
     displayPrices(totalPrice, discountedPrice, totalPrice, subTotal)
 }
 
 function displayPrices(totalPrice, totalAfterDiscont, totalAfterTax, total) {
-    $("#displayTax").text("$" + tax);
-    $("#total").text("$" + total.toFixed(2));
-    $("#totalAfterDiscount").text("$" + totalAfterDiscont.toFixed(2));
-    $("#totalAfterTax").text("$" + parseFloat(totalAfterTax).toFixed(2));
-    $("#totalPrice").text("$" + parseFloat(totalPrice).toFixed(2));
-    $("#pay").text("Pay ($" + parseFloat(totalPrice).toFixed(2) + ")");
+    $("#displayTax").text(tax + " L.E");
+    $("#total").text(total.toFixed(2) + " L.E");
+    $("#totalAfterDiscount").text(totalAfterDiscont.toFixed(2) + " L.E");
+    $("#totalAfterTax").text(parseFloat(totalAfterTax).toFixed(2) + " L.E");
+    $("#totalPrice").text(parseFloat(totalPrice).toFixed(2) + " L.E");
+    $("#pay").text("اشتري (" + parseFloat(totalPrice).toFixed(2) + "L.E)");
 
 }
 
@@ -139,7 +156,7 @@ function displayItems(items) {
                 
                     </div>
                     <div class="col-md-6">
-                        <p>$${(item.count * item.product.price).toFixed(2)}</p>
+                        <p>${(item.count * item.product.price).toFixed(2)} L.E</p>
                     </div>
                 </div>
             </div>
@@ -156,11 +173,11 @@ function displayItems(items) {
 function changeTax(taxValue) {
     console.log("text ", taxValue)
     tax = parseFloat(taxValue)
-    calculateReceipt();
+    calculateReceipt(isDiscountPercentage, isTaxPercentage);
 }
 function changeDiscount(discountValue) {
     discount = parseFloat(discountValue)
-    calculateReceipt();
+    calculateReceipt(isDiscountPercentage, isTaxPercentage);
 }
 function filterProducts(word) {
     let productContainer = ``;
@@ -174,7 +191,7 @@ function filterProducts(word) {
                         src="${product.image}"
                         alt="homemade-white-chocolate-mocha-image-square">
                     </div>
-                    <p class="mt-2 text-center">${product.name} <br> <span class="primary-color">$${product.price.toFixed(2)}</span>
+                    <p class="mt-2 text-center">${product.name} <br> <span class="primary-color">${product.price.toFixed(2)} L.E</span>
                     </p>
                 </div>
             </div>
@@ -197,7 +214,7 @@ function displayProduct() {
                 src="${product.image}"
                 alt="homemade-white-chocolate-mocha-image-square">
                 </div>
-                <p class="mt-2 text-center">${product.name} <br> <span class="primary-color">$${product.price.toFixed(2)}</span>
+                <p class="mt-2 text-center">${product.name} <br> <span class="primary-color">${product.price.toFixed(2)} L.E</span>
                 </p>
             </div>
         </div>
@@ -205,34 +222,28 @@ function displayProduct() {
         `
     }
     $("#productsContainer").append(productContainer);
-    // $.ajax({
-    //     type: "method",
-    //     url: "url",
-    //     data: "data",
-    //     dataType: "dataType",
-    //     success: function (response) {
+    $.ajax({
+        type: "method",
+        url: "url",
 
-    //     }
-    // });
+        dataType: "dataType",
+        success: function (response) {
+
+        }
+    });
 }
 
 function uniqueId() {
     return ++counter;
 }
 
-$(function () {
-    $("#customers").select2();
-    $("#customers").change(function () {
-        getCustomerByMobileNumber($(this).val())
 
-    });
-})
 
 function getCustomerByMobileNumber(mobileNumber) {
 
     $("#customerInfo").html(`
-        <h6>Name: ${"Eng.kahlid"}</h6>
-        <h6>Address: ${"Cairo, Egypt"}</h6>
+        <h6>الاسم: ${"Eng.kahlid"}</h6>
+        <h6>العنوان: ${"Cairo, Egypt"}</h6>
         `
     );
     // $.ajax({
@@ -263,10 +274,38 @@ function GetAllCustomers() {
         }
     });
 }
-function getProductsBySectionId( sectionId, element ){
+function getProductsBySectionId(sectionId, element) {
     $(element).addClass("active-category").siblings().removeClass("active-category");
+
+    $.ajax({
+        type: "GET",
+        url: `getProducts/{store_id}/${sectionId}`,
+        data: {},
+        dataType: "json",
+        success: function (response) {
+            products = response;
+            displayProduct();
+        }
+    });
 }
 function getSections() {
+    displaySections();
+    $("#sections").children(':first').addClass("active-category");
+
+    $.ajax({
+        type: "GET",
+        url: "/getSections/{store_id}",
+        data: {},
+        dataType: "json",
+        success: function (response) {
+            sections = response
+            displaySections();
+            $("#sections").children(':first').addClass("active-category");
+        }
+    });
+}
+
+function displaySections() {
     for (const section of sections) {
         $("#sections").append(`
         <div onClick="getProductsBySectionId(${section.id} , this)"  class="col-md-2  shadow bg-white mx-1 d-flex justify-content-center align-items-center">
@@ -276,28 +315,41 @@ function getSections() {
         </div>
         `)
     }
-    $("#sections").children(':first').addClass("active-category");
-    
-    $.ajax({
-        type: "GET",
-        url: "/getSections/{store_id}",
-        data: {},
-        dataType: "json",
-        success: function (response) {
-            for (const section of response) {
-                $("#sections").append(`
-                <div onClick="getProductsBySectionId(${section.id})" class="col-md-2  shadow bg-white mx-1 d-flex justify-content-center align-items-center">
-                <div class="text-center my-3 ">
-                <p class="m-0">${section.name}</p>
-                </div>
-                </div>
-                `)
-            }
-            $("#sections").children(':first').addClass("active-category");
+}
+
+
+$(function () {
+    $("#customers").select2();
+    $("#customers").change(function () {
+        getCustomerByMobileNumber($(this).val())
+
+    });
+    $("#discountPayMode").change(function (e) {
+        if ($(this).val() == "percentage") {
+            isDiscountPercentage = true;
+            calculateReceipt(isDiscountPercentage, isTaxPercentage);
+        }
+        else {
+            isDiscountPercentage = false;
+            calculateReceipt(isDiscountPercentage, isTaxPercentage);
+
         }
     });
-}
+    $("#taxPayMode").change(function (e) {
+        if ($(this).val() == "percentage") {
+            isTaxPercentage = true;
+            calculateReceipt(isDiscountPercentage, isTaxPercentage);
+        }
+        else {
+            isTaxPercentage = false;
+            calculateReceipt(isDiscountPercentage, isTaxPercentage);
+
+        }
+
+
+    });
+})
 displayProduct();
 GetAllCustomers();
 getSections();
-calculateReceipt();
+// calculateReceipt();
