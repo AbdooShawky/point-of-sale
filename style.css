@@ -148,4 +148,11 @@ body {
   #sections .col-md-2:hover{
     transform: scale(1.1);
   }
-  
+  .checkout-container{
+    width: 90%;
+    margin: auto;
+  }
+
+  .validationError {
+    color: red !important;
+}

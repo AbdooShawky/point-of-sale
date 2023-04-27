@@ -120,10 +120,13 @@ function calculateReceipt(isDiscountPercentage, isTaxPercentage) {
         totalPrice = discountedPrice + parseFloat(tax);
 
     }
+    totalAfterDiscount = discountedPrice;
+    totalAfterTax = totalPrice;
     displayPrices(totalPrice, discountedPrice, totalPrice, subTotal)
 }
 
 function displayPrices(totalPrice, totalAfterDiscont, totalAfterTax, total) {
+
     $("#displayTax").text(tax + " L.E");
     $("#total").text(total.toFixed(2) + " L.E");
     $("#totalAfterDiscount").text(totalAfterDiscont.toFixed(2) + " L.E");
@@ -240,21 +243,30 @@ function uniqueId() {
 
 
 function getCustomerByMobileNumber(mobileNumber) {
-
     $("#customerInfo").html(`
-        <h6>الاسم: ${"Eng.kahlid"}</h6>
-        <h6>العنوان: ${"Cairo, Egypt"}</h6>
-        `
-    );
-    // $.ajax({
-    //     type: "GET",
-    //     url: "url", //url...?mobile=mobileNumber
-    //     data: { mobile: mobileNumber },
-    //     dataType: "json",
-    //     success: function (response) {
-    //         $("#customerInfo").text(response.customer.name);
-    //     }
-    // });
+    <h6>الاسم: ${"test name"}</h6>
+    <h6>العنوان: ${"test address"}</h6>
+    <h6>الكود: ${"test code"}</h6>
+`);
+    $("#custName").val("test name");
+    $("#custAddress").val("test address");
+    $("#custCode").val("test code");
+    $.ajax({
+        type: "GET",
+        url: `/getCustomers/${mobileNumber}`, //url...?mobile=mobileNumber
+        data: {},
+        dataType: "json",
+        success: function (response) {
+            $("#customerInfo").html(`
+                <h6>الاسم: ${response.name}</h6>
+                <h6>العنوان: ${response.address}</h6>
+                <h6>الكود: ${response.code}</h6>
+            `);
+            $("#custName").val(response.name);
+            $("#custAddress").val(response.address);
+            $("#custCode").val(response.code);
+        }
+    });
 }
 function GetAllCustomers() {
     $("#customers").append(`<option value=""></option>`);
@@ -268,7 +280,7 @@ function GetAllCustomers() {
         dataType: "json",
         success: function (response) {
             $("#customers").append(`<option value=""></option>`);
-            for (const mobileNumber of customerMobileNumbers) {
+            for (const customer of response) {
                 $("#customers").append(`<option value="${mobileNumber}">${mobileNumber}</option>`);
             }
         }
@@ -288,6 +300,19 @@ function getProductsBySectionId(sectionId, element) {
         }
     });
 }
+function initialDisplayProducts(sectionId) {
+    $.ajax({
+        type: "GET",
+        url: 'getProducts/{store_id}/' + 'sectionId',
+        data: {},
+        dataType: "json",
+        success: function (response) {
+            products = response;
+            displayProduct();
+        }
+    });
+}
+
 function getSections() {
     displaySections();
     $("#sections").children(':first').addClass("active-category");
@@ -300,6 +325,7 @@ function getSections() {
         success: function (response) {
             sections = response
             displaySections();
+            initialDisplayProducts(sections[0].id);
             $("#sections").children(':first').addClass("active-category");
         }
     });
@@ -325,7 +351,7 @@ $(function () {
 
     });
     $("#discountPayMode").change(function (e) {
-        if ($(this).val() == "percentage") {
+        if ($(this).val() == "percent") {
             isDiscountPercentage = true;
             calculateReceipt(isDiscountPercentage, isTaxPercentage);
         }
@@ -336,19 +362,105 @@ $(function () {
         }
     });
     $("#taxPayMode").change(function (e) {
-        if ($(this).val() == "percentage") {
+        if ($(this).val() == "percent") {
             isTaxPercentage = true;
             calculateReceipt(isDiscountPercentage, isTaxPercentage);
         }
         else {
             isTaxPercentage = false;
             calculateReceipt(isDiscountPercentage, isTaxPercentage);
+        }
+    });
+
+   
+})
+
+
+$("#checkoutForm").validate({
+    messages:{
+       
+        customers:{
+            required: "من فضلك اختر عميل"
+        }
+    },
+    errorClass: "validationError"
+});
+
+
+function submitForm() {
+    let product_id = [];
+    let count = [];
+    let price = [];
+    let discountTotal = [];
+    let total = [];
+    let taxTotal = [];
+    let allTax = [];
+    let allDiscount = [];
+    let subTotal = [];
+    for (const iterator of items) {
+        product_id.push(iterator.product.id);
+        count.push(iterator.count);
+        price.push(iterator.product.price);
+        total.push(iterator.totalPrice);
+        if (isDiscountPercentage) {
+            discountTotal.push(iterator.totalPrice * (1 - (discount / 100)))
+        }
+        else {
+            discountTotal.push(iterator.totalPrice - discount)
 
         }
+        if (isTaxPercentage) {
+            taxTotal.push(iterator.totalPrice + (iterator.totalPrice * (tax / 100)))
+        }
+        else {
+            taxTotal.push(iterator.totalPrice - discount)
+
+        }
+        subTotal.push(iterator.totalPrice);
+        allDiscount.push(discount);
+        allTax.push(tax);
+
+    }
+    if ($("#checkoutForm").valid()) {
 
 
-    });
-})
+        let checkout = {
+            customer_phone: $("#customers").val(),
+            customer_name: $("#custName").val(),
+            customer_address: $("#custAddress").val(),
+            customer_Code: $("#custCode").val(),
+            value_discount: $("#discountPayMode").val(),
+            value_tax: $("#taxPayMode").val(),
+            product_id: product_id,
+            count: count,
+            price: price,
+            discount: allDiscount,
+            total: total,
+            tax: allTax,
+            total_after_tax: taxTotal,
+            total_before_discount: subTotal,
+            price_total: totalPrice,
+            discount_total: discount,
+            total_after_discount: totalAfterDiscount,
+            total_tax: tax,
+            totalAfterTax: totalAfterTax
+
+        }
+        console.log(checkout)
+
+        $.ajax({
+            type: "POST",
+            url: "...",
+            datatype: "json",
+            data: JSON.stringify(checkout),
+            contentType: "application/json",
+            success: function (response) {
+
+            }
+        });
+    }
+    
+}
 displayProduct();
 GetAllCustomers();
 getSections();
